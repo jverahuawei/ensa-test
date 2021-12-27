@@ -30,6 +30,6 @@ namespace ensa_test
     public class Constants
     {
         //Set your Api Key from agconnect-services.json file
-        public const string API_KEY = "YOUR_API_KEY";
+        public const string API_KEY = "CwEAAAAATAPCTh93s/6x3IwdR6MUHCGiD04oDoZlN9H6JylJIkYjSt/idsqRX5F35wcGQQubgi0lnyciacATNC3WainWPPEdvs0=";
     }
 }
