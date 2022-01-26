@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Android.App;
+using Android.OS;
 using Android;
-using Android.App;
+using Android.Support.V4.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.OS;
-using Android.Runtime;
-using Android.Support.V4.App;
 using Android.Util;
-using Android.Views;
-using Android.Widget;
-using AndroidX.Core.App;
 using Huawei.Hms.Maps;
 using Huawei.Hms.Maps.Model;
 
@@ -29,8 +21,10 @@ namespace ensa_test
 
         private MapView mMapView;
 
-        //Permission request code.
-        private const int REQUEST_CODE = 100;
+        private Marker mOrsay;
+        private static readonly LatLng ORSAY = new LatLng(8.957303, -79.541413);
+
+
 
         //Required permissions
         private static readonly string[] RUNTIME_PERMISSIONS = {
@@ -41,18 +35,22 @@ namespace ensa_test
         Manifest.Permission.Internet
         };
 
+        //Permission request code.
+        private const int REQUEST_CODE = 100;
+
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
             SetContentView(Resource.Layout.activity_main);
 
-
             //Check permissions
             if (!HasPermissions(this, RUNTIME_PERMISSIONS))
             {
-                AndroidX.Core.App.ActivityCompat.RequestPermissions(this, RUNTIME_PERMISSIONS, REQUEST_CODE);
+                ActivityCompat.RequestPermissions(this, RUNTIME_PERMISSIONS, REQUEST_CODE);
             }
+
 
             mMapView = (MapView)FindViewById(Resource.Id.mapView);
             Bundle mapViewBundle = null;
@@ -60,8 +58,7 @@ namespace ensa_test
             {
                 mapViewBundle = savedInstanceState.GetBundle(MAPVIEW_BUNDLE_KEY);
             }
-            // please replace "Your API key" with api_key field value in
-            // agconnect-services.json if the field is null.
+        
             MapsInitializer.SetApiKey(Constants.API_KEY);
             mMapView.OnCreate(mapViewBundle);
             mMapView.GetMapAsync(this);
@@ -109,9 +106,17 @@ namespace ensa_test
         {
             Log.Debug(TAG, "onMapReady: ");
             hMap = map;
-            hMap.MyLocationEnabled = false;
-            hMap.MoveCamera(CameraUpdateFactory.NewLatLngZoom(new LatLng(48.893478, 2.334595), 10));
+            hMap.MapType = HuaweiMap.MapTypeNormal;
+            hMap.UiSettings.MyLocationButtonEnabled = true;
+            hMap.MyLocationEnabled = true;
+            hMap.MoveCamera(CameraUpdateFactory.NewLatLngZoom(new LatLng(8.9778032, -79.5618084), 13));
+            mOrsay = hMap.AddMarker(new MarkerOptions().InvokePosition(ORSAY)
+                   .InvokeTitle("Tienda Huawei")
+                   .InvokeSnippet("casco antiguo")
+                   .Clusterable(true)
+                   .InvokeIcon(BitmapDescriptorFactory.FromResource(Resource.Drawable.badge_nj)));
         }
+
 
         /// <summary>
         /// Check whether permissions are granted
@@ -130,6 +135,8 @@ namespace ensa_test
             }
             return true;
         }
+
+        
 
     }
 
